@@ -6,8 +6,6 @@ import java.sql.SQLException;
 import java.sql.Statement;
 
 import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
@@ -23,7 +21,7 @@ public class TableData {
 	{
 		this.db = db;
 	}
-
+	
 	public List<Example> getDistinctTransazioni(String table) throws SQLException, EmptySetException
 	{
 		TableSchema colonne = new TableSchema(db, table);
@@ -32,10 +30,11 @@ public class TableData {
 		ResultSet r = s.executeQuery("Select distinct * from " + table);
 		Example temp = new Example();
 		int i;
+		
 		while (r.next())
 		{
 			i = 1;
-			while(i < colonne.getNumberOfAttributes()) 
+			while (i < colonne.getNumberOfAttributes()) 
 			{
 				if (colonne.getColumn(i).isNumber())
 				{
@@ -52,14 +51,18 @@ public class TableData {
 			tabella.add(temp);
 		}
 		
-		r.close();
+		if (r.first() == false)
+		{
+			throw new EmptySetException("Set vuoto");
+		}
 		
+		r.close();
 		db.closeConnection();
 		
 		return tabella;
 	}
 
-	public Set<Object>getDistinctColumnValues(String table,Column column) throws SQLException
+	public Set<Object> getDistinctColumnValues(String table,Column column) throws SQLException
 	{
 		Set<Object> valCol = new TreeSet<Object>();
 		Statement s = db.getConnection().createStatement();
@@ -81,17 +84,17 @@ public class TableData {
 		}
 		
 		r.close();
-		
 		db.closeConnection();
 			
 		return valCol;	
 	}
 
-	public Object getAggregateColumnValue(String table, Column column, QUERY_TYPE aggregate) throws SQLException,NoValueException
+	public Object getAggregateColumnValue(String table, Column column, QUERY_TYPE aggregate) throws SQLException, NoValueException
 	{
 		Statement s = db.getConnection().createStatement();
 		ResultSet r;
-		if(aggregate.equals(QUERY_TYPE.MAX)) 
+		
+		if (aggregate.equals(QUERY_TYPE.MAX)) 
 		{	
 			r = s.executeQuery("Select max(" + column.getColumnName() + ") from " + table );	
 		}
@@ -100,11 +103,14 @@ public class TableData {
 			r = s.executeQuery("Select min(" + column.getColumnName() + ") from " + table );	
 		}
 		
-		r.close();
+		if (r.first() == false)
+		{
+			throw new NoValueException("Set vuoto");
+		}
 		
+		r.close();
 		db.closeConnection();
 		
 		return r.next();
 	}
-
 }

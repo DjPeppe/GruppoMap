@@ -7,5 +7,4 @@ public class NoValueException extends Exception {
 	{
 		super(message);
 	}
-
 }

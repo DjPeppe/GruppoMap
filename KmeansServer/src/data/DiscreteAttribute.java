@@ -46,8 +46,8 @@ class DiscreteAttribute extends Attribute implements Iterable<String> {
 	}
 
 	private int findColumn(Data data, String v) /* trovare la colonna di Data in cui poter trovare la stringa v
-												  * trovando prima v a che discreteAttribute appartiene
-												  */
+												 * trovando prima v a che discreteAttribute appartiene
+												 */
 	{
 		int i, index;
 		
@@ -77,5 +77,4 @@ class DiscreteAttribute extends Attribute implements Iterable<String> {
 		
 		return -1;
 	}
-	
 }

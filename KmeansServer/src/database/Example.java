@@ -47,5 +47,4 @@ public class Example implements Comparable<Example>, Serializable {
 		
 		return str;
 	}
-	
 }

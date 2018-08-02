@@ -10,10 +10,7 @@ class ContinuousAttribute extends Attribute {
 	{
 		super(name, index); // stiamo invocando il costruttore della classe padre
 		min = minimo;
-		max = maximo; /* Decimo Meridio, comandante delle Legioni Felix, 
-					   *marito di una donna assassinata, padre di un figlio ucciso... 
-					   *e avrò la mia vendetta, in questa vita o nell'altra.
-					   */
+		max = maximo; 
 	}
 	
 	double getScaledValue(double v)

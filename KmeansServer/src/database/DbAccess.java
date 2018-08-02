@@ -25,12 +25,11 @@ public class DbAccess {
 	
 	public Connection getConnection()
 	{
-		return conn; // DOYLE
+		return conn;
 	}
 	
 	void closeConnection() throws SQLException
 	{
 		conn.close();
 	}
-
 }

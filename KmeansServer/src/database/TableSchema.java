@@ -7,7 +7,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 
 public class TableSchema {
@@ -26,12 +25,12 @@ public class TableSchema {
 			this.type = type;
 		}
 		
-		public String getColumnName()
+		String getColumnName()
 		{
 			return name;
 		}
 		
-		public boolean isNumber()
+		boolean isNumber()
 		{
 			return type.equals("number");
 		}
@@ -40,7 +39,6 @@ public class TableSchema {
 		{
 			return name + " : " + type;
 		}
-		
 	}
 	
 	public TableSchema(DbAccess db, String tableName) throws SQLException
@@ -74,15 +72,14 @@ public class TableSchema {
 	     
 	    res.close();
 	}
-	  
-		public int getNumberOfAttributes()
-		{
-			return tableSchema.size();
-		}
-		
-		public Column getColumn(int index)
-		{
-			return tableSchema.get(index);
-		}
-		
+	
+	public int getNumberOfAttributes()
+	{
+		return tableSchema.size();
 	}
+	
+	Column getColumn(int index)
+	{
+		return tableSchema.get(index);
+	}
+}

@@ -8,9 +8,9 @@ import data.*;
 public class Cluster implements Serializable {
 	
 	private Tuple centroid; // vettore di item, contenenti un Attribute e un oggetto
-	private HashSet<Integer> clusteredData; // vettore inizialmente di booleani
+	private HashSet<Integer> clusteredData; // contiene gli indici delle righe che si avvicinano al centroid
 
-	Cluster() // costruttore con valori casuali
+	Cluster() 
 	{
 		centroid = new Tuple(5); 
 		clusteredData = new HashSet<Integer>();
@@ -41,7 +41,7 @@ public class Cluster implements Serializable {
 		return clusteredData.add(id);
 	}
 
-	//verifica se una transazione Ë clusterizzata nell'array corrente
+	//verifica se una transazione è clusterizzata nell'array corrente
 	boolean contain(int id)
 	{
 		Iterator<Integer> itr = clusteredData.iterator();
@@ -70,8 +70,7 @@ public class Cluster implements Serializable {
 				
 				return;
 			}
-		}
-		
+		}	
 	}
 
 	public String toString()
@@ -91,7 +90,9 @@ public class Cluster implements Serializable {
 		String str = "Centroid = (";
 		
 		for (int i = 0; i < centroid.getLength(); i++)
+		{
 			str += centroid.get(i) + " ";
+		}
 		str += ")\nExamples:\n";
 		
 		Iterator<Integer> itr = clusteredData.iterator();
@@ -109,5 +110,4 @@ public class Cluster implements Serializable {
 		
 		return str;
 	}
-	
 }

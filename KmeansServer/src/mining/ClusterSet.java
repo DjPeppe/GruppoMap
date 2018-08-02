@@ -34,23 +34,23 @@ public class ClusterSet implements Serializable {
 		{
 			Tuple centroidI = data.getItemSet(centroidIndexes[i]);
 			add(new Cluster(centroidI));
-		}
-				
+		}		
 	}
 
 	Cluster nearestCluster(Tuple tuple) // ricerca del cluster con la distanza minore, per questo più vicino
 	{
-		double distanza,best;
+		double distanza, best;
 		int k;
 		Cluster A = new Cluster(tuple);
 		int j = k = 0;
 		distanza = tuple.getDistance(C[j].getCentroid());
 		best = distanza;
+		
 		j++;
 		while (j < i)
 		{
 			distanza = tuple.getDistance(C[j].getCentroid());
-			if (best > distanza)
+			if (distanza < best)
 			{
 				best = distanza;
 				k = j;
@@ -71,9 +71,7 @@ public class ClusterSet implements Serializable {
 		k = 0;
 		while (k < i) // cicla per tutta la lunghezza del vettore ClusterSet
 		{
-			if (get(k).contain(id)) /* controlla che in posizione id del Cluster k presente in ClusterSet ci sia Vero
-									 * perché è un vettore di booleani
-									 */
+			if (get(k).contain(id)) // controlla che in posizione id del Cluster k presente in ClusterSet ci sia Vero				 
 			{
 				return get(k);
 			}

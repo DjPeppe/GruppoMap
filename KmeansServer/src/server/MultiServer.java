@@ -12,6 +12,7 @@ class MultiServer {
 	{
 		try
 		{
+			@SuppressWarnings("unused")
 			MultiServer server1 = new MultiServer(PORT);
 		}
 		catch (IOException e)
@@ -20,7 +21,7 @@ class MultiServer {
 		}
 	}
 	
-	public MultiServer(int port) throws IOException
+	private MultiServer(int port) throws IOException 
 	{
 		PORT = port;
 		this.run();
@@ -41,7 +42,7 @@ class MultiServer {
 				}
 				catch (IOException e) // Se fallisce chiude il socket, altrimenti la chiuderà il thread
 				{
-					socket.close();
+					throw new IOException();
 				}
 			}		
 		}

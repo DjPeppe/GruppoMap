@@ -63,8 +63,7 @@ public class Data implements Serializable {
 		
 		data = new ArrayList<Example>(tempData);
 		
-		numberOfExamples = data.size();		  
-			
+		numberOfExamples = data.size();		  		
 	}
 		
 	public int getNumberOfExamples()
@@ -121,13 +120,11 @@ public class Data implements Serializable {
 								        */
 	{
 		Tuple tuple = new Tuple(explanatorySet.size());
-		
-		int i = 0;
-		
 		Iterator<Attribute> itr = explanatorySet.iterator();
 		Iterator<Object> colonna = data.get(index).iterator();
-		
 		Attribute temp;
+		int i = 0;
+		
 		while (itr.hasNext())
 		{
 			temp = itr.next();
@@ -147,11 +144,11 @@ public class Data implements Serializable {
 		return tuple;
 	}
 
-	public int[] sampling(int k) throws OutOfRangeSampleSize // non modificato perché dato da lei
+	public int[] sampling(int k) throws OutOfRangeSampleSize 
 	{
 		if (k <= 0 || k > getNumberOfExamples()) 
 		{
-			throw new OutOfRangeSampleSize("\nNumero di cluster non valido, sei fuori dal tunnel\n");
+			throw new OutOfRangeSampleSize("\nNumero di cluster non valido\n");
 		}
 		int centroidIndexes[] = new int[k]; 
 		//choose k random different centroids in data.
@@ -212,11 +209,12 @@ public class Data implements Serializable {
 		Iterator<String> itr = attribute.iterator();
 		while (itr.hasNext())
 		{
-			word = itr.next(); // da modificare perché adesso attribute è un TreeSet
+			word = itr.next(); 
 			temp.add(attribute.frequency(this, idList, word));
 		}
-		max = max(temp);
-		
+		max = max(temp); /* temp grande quanto parole di attribute, e contiene le occorrenze solo
+		 				  * di ognuna nelle righe di idList
+						  */
 		itr = attribute.iterator(); // per far ricominciare l'iteratore dall'inizio del TreeSet, fino a j
 		i = 0;
 		while (i < max) // ciclo per far andare avanti l'iteratore del TreeSet di j volte, perché j è l'indice del vettore					
@@ -228,7 +226,10 @@ public class Data implements Serializable {
 		return itr.next();
 	}
 
-	private int max(List<Integer> list) // calcolo del massimo per un vettore, contiene le occorrenze di tutte le stringhe
+	private int max(List<Integer> list) /* calcolo del massimo per un vettore, 
+										 * contiene le occorrenze di tutte le stringhe
+										 * di list, che è un solo Discrete Attribute
+										 */
 	{
 		int i, j, max, best; // j serve per ritornare l'indice del best
 		i = best = j = 0;
@@ -270,13 +271,10 @@ public class Data implements Serializable {
 		if (attribute instanceof ContinuousAttribute) 
 		{
 			return computePrototype(idList, (ContinuousAttribute)attribute);
-			
 		}
 		else 
 		{	
 			return computePrototype(idList, (DiscreteAttribute)attribute);	
 		}
-	
 	}
-	
 }

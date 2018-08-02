@@ -1,9 +1,6 @@
 
 package data;
 
-import java.io.*;
-import data.Item;
-
 class ContinuousItem extends Item {
 	
 	ContinuousItem(Attribute attribute, Double value)
@@ -18,5 +15,4 @@ class ContinuousItem extends Item {
 
 		return Math.abs(first-second); // valore assoluto
 	}
-	
 }

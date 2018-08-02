@@ -3,11 +3,11 @@ package server;
 
 import java.net.*;
 import java.io.*;
-import mining.KmeansMiner;
 import java.sql.*;
 
 import database.*;
 import data.Data;
+import mining.KmeansMiner;
 import data.OutOfRangeSampleSize;
 
 class ServerOneClient extends Thread {
@@ -17,7 +17,7 @@ class ServerOneClient extends Thread {
 	private ObjectOutputStream out;
 	private KmeansMiner kmeans;
 	
-	public ServerOneClient(Socket s) throws IOException
+	ServerOneClient(Socket s) throws IOException
 	{
 		socket = s;
 		in = new ObjectInputStream(socket.getInputStream());
@@ -31,7 +31,7 @@ class ServerOneClient extends Thread {
 		{
 			Data data = null;
 			int k;
-			KmeansMiner kmeans = null;
+			kmeans = null;
 			int scelta;
 			while (true)
 			{
@@ -47,6 +47,7 @@ class ServerOneClient extends Thread {
 					catch (SQLException e)
 					{
 						System.err.println("Database not found");
+						out.writeObject("Database");
 					}
 					catch (DatabaseConnectionException e)
 					{
@@ -66,7 +67,7 @@ class ServerOneClient extends Thread {
 					}
 					catch (OutOfRangeSampleSize e)
 					{
-						e.printStackTrace();;
+						out.writeObject("Range"); // il k è maggiore del massimo o minore del minimo
 					}
 				}
 				else if (scelta == 2) 
@@ -104,12 +105,13 @@ class ServerOneClient extends Thread {
 						}
 						catch (OutOfRangeSampleSize e)
 						{
-							e.printStackTrace();
+							out.writeObject("Range"); // Hai superato il massimo di k, oppure oltre il minimo
 						}
 					}
 					catch (FileNotFoundException e)
 					{
-						e.printStackTrace();
+						System.err.println("File not found");
+						out.writeObject("File"); // File non corretto
 					}
 					catch (IOException e)
 					{
@@ -125,12 +127,10 @@ class ServerOneClient extends Thread {
 		catch (ClassNotFoundException e)
 		{
 			System.err.println("Class not found");
-			e.printStackTrace();
 		}
 		catch (IOException e)
 		{
-			System.err.println("IO Exception");
-			e.printStackTrace();
+			System.err.println("Client disconnected"); // IOException
 		}
 		finally 
 		{
@@ -144,5 +144,4 @@ class ServerOneClient extends Thread {
 			}
 		}
 	}
-
 }

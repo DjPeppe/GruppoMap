@@ -43,5 +43,4 @@ public abstract class Item implements Serializable {
 	{
 		value = data.computePrototype(clusteredData, attribute);
 	}
-
 }

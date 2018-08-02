@@ -1,3 +1,4 @@
+
 package database;
 
 public enum QUERY_TYPE {

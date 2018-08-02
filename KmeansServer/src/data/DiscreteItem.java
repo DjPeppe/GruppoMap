@@ -1,8 +1,6 @@
 
 package data;
 
-import java.io.*;
-
 class DiscreteItem extends Item {
 	
 	DiscreteItem(DiscreteAttribute attribute, String value)
@@ -21,5 +19,4 @@ class DiscreteItem extends Item {
 			return 1;
 		}
 	}	
-
 }

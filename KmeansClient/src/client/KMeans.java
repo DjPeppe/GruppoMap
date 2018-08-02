@@ -2,14 +2,9 @@
 package client;
 
 import javax.swing.*;
-
-import java.awt.BorderLayout;
-import java.awt.Color;
 import java.awt.Container;
 import java.awt.FlowLayout;
 import java.awt.event.*;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -21,10 +16,11 @@ public class KMeans {
 	
 	private ObjectOutputStream out;
 	private ObjectInputStream in;
+	private Socket socket;
 	
 	public void init(String ip, int port) throws IOException
 	{
-		JFrame finestra = new JFrame("Pippo");
+		JFrame finestra = new JFrame("Data Mining");
 		finestra.setBounds(300, 300, 600, 500);
 		Container cp = finestra.getContentPane();
 		TabbedPane tab = new TabbedPane();
@@ -33,22 +29,56 @@ public class KMeans {
 		finestra.setVisible(true);
 		InetAddress addr = InetAddress.getByName(ip); // ip 
 		System.out.println("addr = " + addr);
-		Socket socket = new Socket(addr, port); // Port
+		socket = new Socket(addr, port); // Port
 		System.out.println(socket);
 		
 		out = new ObjectOutputStream(socket.getOutputStream());
 		in = new ObjectInputStream(socket.getInputStream()); // stream con richieste del client
 		
-		finestra.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); // chiudere tutto al tasto X
+		finestra.setDefaultCloseOperation(finestra.EXIT_ON_CLOSE);
+		finestra.addWindowListener(new ButtonExit());
 	}
 	
-	class TabbedPane extends JPanel 
+	private class ButtonExit implements WindowListener
 	{
+		public void windowClosing(WindowEvent arg0) 
+		{
+			try 
+			{
+				socket.close();
+			} 
+			catch (IOException e) 
+			{
+				e.printStackTrace();
+			}
+		}
+		
+		public void windowClosed(WindowEvent evento)
+		{}
+
+		public void windowActivated(WindowEvent arg0) 
+		{}
+		
+		public void windowDeiconified(WindowEvent arg0) 
+		{}
+
+		public void windowIconified(WindowEvent arg0) 
+		{}
+
+		public void windowOpened(WindowEvent arg0) 
+		{}
+
+		public void windowDeactivated(WindowEvent arg0)
+		{}
+	}
+	
+	class TabbedPane extends JPanel {
+		
 		private JPanelCluster panelDB;
 		private JPanelCluster panelFile;
 		
-		class JPanelCluster extends JPanel
-		{
+		class JPanelCluster extends JPanel {
+			
 			private JTextField tableText = new JTextField(20);
 			private JTextField kText = new JTextField(10);
 			private JTextArea clusterOutput = new JTextArea();
@@ -62,7 +92,7 @@ public class KMeans {
 				JLabel first = new JLabel("Table:");
 				JLabel second = new JLabel("k:");
 				
-				upper.setLayout(new FlowLayout(1));
+				upper.setLayout(new FlowLayout());
 				central.setLayout(new FlowLayout());
 				
 				upper.add(first);
@@ -70,6 +100,7 @@ public class KMeans {
 				upper.add(second);
 				upper.add(kText);
 				central.add(clusterOutput);
+				clusterOutput.setEditable(false);
 				executeButton = new JButton(buttonName);
 				down.add(executeButton);
 				
@@ -175,54 +206,32 @@ public class KMeans {
 			out.writeObject(0);
 			out.writeObject(nomeTab);
 			String result = (String)in.readObject();
-			try 
+			if (result.equals("OK"))
 			{
+				out.writeObject(1);
+				out.writeObject(k);
+				result = (String)in.readObject();
 				if (result.equals("OK"))
 				{
-					out.writeObject(1);
-					out.writeObject(k);
+					Integer numIter = (Integer)in.readObject();
+					String cluster = (String)in.readObject();
+					panelDB.clusterOutput.setText("Numero di iterazioni: " + numIter.toString() + "\n");
+					panelDB.clusterOutput.append(cluster);
+					out.writeObject(2);
 					result = (String)in.readObject();
-					try 
+					if (result.equals("OK"))
 					{
-						if (result.equals("OK"))
-						{
-							int numIter = (int)in.readObject();
-							String cluster = (String)in.readObject();
-							// Mancano le iterazioni di Maximo
-							panelDB.clusterOutput.setText(cluster);
-							out.writeObject(2);
-							result = (String)in.readObject();
-							if (result.equals("OK"))
-							{
-								
-								JOptionPane.showMessageDialog(this, "Complimenti, Sei un cavaliere dello Zodiaco");	
-							}
-							/*try 
-							{
-								if (result.equals("OK"))
-								{
-									JOptionPane.showMessageDialog(this, "Complimenti, Sei un cavaliere dello Zodiaco");								
-								}
-							}
-							catch (IOException e)
-							{
-								JOptionPane.showMessageDialog(this, e.toString());
-								return;
-							}
-							*/
-						}
-					}
-					catch (IOException e)
-					{
-						JOptionPane.showMessageDialog(this, e.toString());
-						return;
+						JOptionPane.showMessageDialog(this, "Operazione completata con successo");	
 					}
 				}
+				else if (result.equals("Range"))
+				{
+					JOptionPane.showMessageDialog(this, "Numero di cluster non valido");
+				}
 			}
-			catch (IOException e)
+			else if (result.equals("Database"))
 			{
-				JOptionPane.showMessageDialog(this, e.toString());
-				return;
+				JOptionPane.showMessageDialog(this, "Database non trovato");
 			}
 		}
 		
@@ -238,22 +247,32 @@ public class KMeans {
 			{
 				String cluster = (String)in.readObject();
 				panelFile.clusterOutput.setText(cluster);
-				JOptionPane.showMessageDialog(this, "Complimenti, Sei un cavaliere dello Zodiaco");								
+				JOptionPane.showMessageDialog(this, "Operazione completata con successo");								
 			}
-			/*try 
+			else if (result.equals("Range"))
 			{
-				if (result.equals("OK"))
-				{
-					JOptionPane.showMessageDialog(this, "Complimenti, Sei un cavaliere dello Zodiaco");								
-				}
+				JOptionPane.showMessageDialog(this, "Numero di cluster non valido");
 			}
-			catch (IOException e)
+			else if (result.equals("File"))
 			{
-				JOptionPane.showMessageDialog(this, e.toString());
-				return;
+				JOptionPane.showMessageDialog(this, "File non trovato");
 			}
-			*/
+		}
+	}
+	
+	public static void main(String[] args)
+	{
+		String ip = args[0];
+		int port = new Integer(args[1]).intValue();
+		KMeans dataMining = new KMeans();
+		
+		try 
+		{
+			dataMining.init(ip, port);
+		} 
+		catch (IOException e) 
+		{
+			e.printStackTrace();
 		}
 	}
 }
-
