@@ -1,0 +1,8 @@
+Commenti Ritornati al Creatore
+Maximo /* Decimo Meridio, comandante delle Legioni Felix, 
+*marito di una donna assassinata, padre di un figlio ucciso... 
+*e avrò la mia vendetta, in questa vita o nell'altra.
+*/
+conn // DOYLE
+// non modificato perché dato da lei
+// numero di cluster non valido, sei fuori dal tunnel
